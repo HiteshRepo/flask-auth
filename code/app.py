@@ -17,7 +17,7 @@ app.secret_key = 'api-key'
 
 api = Api(app)
 
-app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=1800)
+app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=300)
 
 
 @app.before_first_request
