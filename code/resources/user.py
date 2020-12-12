@@ -3,7 +3,9 @@ from flask_restful import Resource, reqparse
 from models.user import UserModel
 import re
 from werkzeug.security import safe_str_cmp
-from flask_jwt_extended import create_access_token, jwt_required
+from flask_jwt_extended import create_access_token, jwt_required, get_raw_jwt
+
+from blacklist import BLACKLIST
 
 _user_parser = reqparse.RequestParser()
 _user_parser.add_argument(
@@ -85,7 +87,13 @@ class UserLogin(Resource):
 
 
 class UserLogout(Resource):
-    pass
+    @jwt_required
+    def post(self):
+        jti = get_raw_jwt(['jti'])
+        BLACKLIST.add(jti)
+        return {
+            'message': 'Successfully logged out.'
+        }, 200
 
 
 class UserList(Resource):

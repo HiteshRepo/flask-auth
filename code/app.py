@@ -5,6 +5,7 @@ from datetime import timedelta
 import sqlite3
 
 from resources.user import UserRegister, User, UserLogin, UserLogout, UserList
+from blacklist import BLACKLIST
 
 app = Flask(__name__)
 
@@ -26,6 +27,27 @@ def create_tables():
 
 
 jwt = JWTManager(app)
+
+
+@jwt.token_in_blacklist_loader
+def check_if_token_in_blacklist(decrypted_token):
+    return decrypted_token['jti'] in BLACKLIST
+
+
+@jwt.revoked_token_loader
+def revoked_token_callback():
+    return jsonify({
+        'description': 'Token has been revoked.',
+        'error': 'token_revoked'
+    }), 401
+
+
+@jwt.expired_token_loader
+def expired_token_callback():
+    return jsonify({
+        'description': 'The token has expired.',
+        'error': 'token_expired'
+    }), 401
 
 
 api.add_resource(UserRegister, '/register')
