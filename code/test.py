@@ -31,6 +31,40 @@ class UsersAPITestCase(unittest.TestCase):
         with self.app.app_context():
             self.db.create_all()
 
+    def test_user_name_error(self):
+        self.creation_payload['username'] = 'hitesh 12345678'
+        res = self.client().post('http://localhost:5000/register', data=self.creation_payload)
+        self.assertEqual(res.status_code, 400)
+        res = json.loads(res.data)
+        self.assertIn(
+            'username should be max 8 characters long and should have at least 1 character', str(res['message']))
+
+    def test_password_error(self):
+        self.creation_payload['password'] = 'pass%1@'
+        res = self.client().post('http://localhost:5000/register', data=self.creation_payload)
+        self.assertEqual(res.status_code, 400)
+        res = json.loads(res.data)
+        self.assertIn(
+            'Password must contain at least one character, one number and any one of these (underscore, hyphen, hash) and Password max length should be 6', str(res['message']))
+
+    def test_email_error(self):
+        self.creation_payload['email'] = 'hitesh@gmailcom'
+        res = self.client().post('http://localhost:5000/register', data=self.creation_payload)
+        self.assertEqual(res.status_code, 400)
+        res = json.loads(res.data)
+        print(res)
+        self.assertIn(
+            'Email should have @ and .', str(res['message']))
+
+    def test_phonenum_error(self):
+        self.creation_payload['phonenum'] = '987'
+        res = self.client().post('http://localhost:5000/register', data=self.creation_payload)
+        self.assertEqual(res.status_code, 400)
+        res = json.loads(res.data)
+        print(res)
+        self.assertIn(
+            'Phone Number must be a valid Indian Cell phone number', str(res['message']))
+
     def test_user_creation(self):
         res = self.client().post('http://localhost:5000/register', data=self.creation_payload)
         self.assertEqual(res.status_code, 201)
