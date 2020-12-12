@@ -1,9 +1,7 @@
 import unittest
-import os
 import json
 from app import create_app
 from db import db
-from flask_jwt_extended import get_current_user
 
 
 class UsersAPITestCase(unittest.TestCase):
