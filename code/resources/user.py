@@ -3,7 +3,7 @@ from flask_restful import Resource, reqparse
 from models.user import UserModel
 import re
 from werkzeug.security import safe_str_cmp
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required
 
 _user_parser = reqparse.RequestParser()
 _user_parser.add_argument(
@@ -59,7 +59,14 @@ class UserRegister(Resource):
 
 
 class User(Resource):
-    pass
+
+    @jwt_required
+    def get(self, name):
+
+        user = UserModel.find_by_name(name)
+        if user:
+            return item.json(), 200
+        return {'message': 'User not found'}, 404
 
 
 class UserLogin(Resource):
