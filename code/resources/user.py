@@ -47,9 +47,12 @@ class UserRegister(Resource):
         return len(username) <= 8 and len(username) > 0
 
     def validatePassword(self, password):
-        if re.fullmatch(r'[A-Za-z0-9_-#]{1,}', password) and len(password) <= 6:
-            return True
-        return False
+        valid = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-#_'
+        chars = list(password)
+        for char in chars:
+            if char not in valid:
+                return False
+        return True
 
     def validateEmail(self, email):
         if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
@@ -98,5 +101,5 @@ class UserLogout(Resource):
 
 class UserList(Resource):
     def get(self):
-        # return {'users': list(map(lambda x: x.json(), UserModel.find_all()))}
-        return {'users': [{'name': 'Hitesh1', 'age': 26}, {'name': 'Hitesh2', 'age': 27}]}
+        return {'users': list(map(lambda x: x.json(), UserModel.find_all()))}
+        # return {'users': [{'name': 'Hitesh1', 'age': 26}, {'name': 'Hitesh2', 'age': 27}]}
