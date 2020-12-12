@@ -92,7 +92,7 @@ class UserLogin(Resource):
 class UserLogout(Resource):
     @jwt_required
     def post(self):
-        jti = get_raw_jwt(['jti'])
+        jti = get_raw_jwt()['jti']
         BLACKLIST.add(jti)
         return {
             'message': 'Successfully logged out.'
