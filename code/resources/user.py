@@ -13,9 +13,9 @@ _user_parser.add_argument(
 _user_parser.add_argument(
     'password', type=str, required=True, help='This field cannot be left blank')
 _user_parser.add_argument(
-    'email', type=str, required=True, help='This field cannot be left blank')
+    'email', type=str)
 _user_parser.add_argument(
-    'phonenum', type=str, required=True, help='This field cannot be left blank')
+    'phonenum', type=str)
 
 
 class UserRegister(Resource):
@@ -66,11 +66,11 @@ class UserRegister(Resource):
 class User(Resource):
 
     @jwt_required
-    def get(self, name):
+    def get(self, user_id):
 
-        user = UserModel.find_by_name(name)
+        user = UserModel.find_by_id(user_id)
         if user:
-            return item.json(), 200
+            return user.json(), 200
         return {'message': 'User not found'}, 404
 
 
